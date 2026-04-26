@@ -5,12 +5,12 @@ import {
   Sequence,
   interpolate,
   spring,
-  staticFile,
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
 import { getVideoMetadata } from "@remotion/media-utils";
 import { loadFont } from "@remotion/google-fonts/PlayfairDisplay";
+import { resolveAsset } from "./utils/resolveAsset";
 
 // Editorial serif for the tagline — Playfair Display at its boldest weight.
 // Loaded once at module scope so every render reuses the same font face.
@@ -34,22 +34,7 @@ export interface TitledVideoProps {
   accentColor?: string;
 }
 
-// Resolve asset path — handle URLs, absolute paths, and public/ relative paths.
-// Mirrors the helper in Explainer.tsx so absolute Windows/Unix paths work.
-function resolveAsset(src: string): string {
-  if (
-    src.startsWith("http://") ||
-    src.startsWith("https://") ||
-    src.startsWith("data:")
-  ) {
-    return src;
-  }
-  const clean = src.replace(/^file:\/\/\/?/, "");
-  if (clean.startsWith("/") || /^[A-Za-z]:[\\/]/.test(clean)) {
-    return `file:///${clean.replace(/\\/g, "/")}`;
-  }
-  return staticFile(clean);
-}
+// resolveAsset 已移至共享模块 utils/resolveAsset.ts
 
 // ---------------------------------------------------------------------------
 // EditorialTagline — big bold serif, upper-third, drawn underline, warm glow.

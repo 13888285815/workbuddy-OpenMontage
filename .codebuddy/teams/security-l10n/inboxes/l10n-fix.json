@@ -1,0 +1,11 @@
+[
+  {
+    "id": "msg-1777178737973-7cywen",
+    "from": "team-lead",
+    "to": "l10n-fix",
+    "type": "message",
+    "content": "请开始执行汉化任务。注意几点：1) README.md 和 docs/PROVIDERS.md 文件很长，请使用 write_to_file 工具写入完整的中文版；2) Python 代码中只翻译用户可见字符串（如 install_instructions、description、错误消息），不要修改变量名、函数名；3) Makefile 中只翻译 @echo 后的英文提示文本；4) TypeScript 组件中只翻译默认文本字符串。",
+    "timestamp": "2026-04-26T04:45:37.973Z",
+    "read": true
+  }
+]

@@ -37,7 +37,7 @@ class FaceRestore(BaseTool):
 
     dependencies = ["python:gfpgan", "python:torch"]
     install_instructions = (
-        "pip install gfpgan  # Includes CodeFormer support. Requires PyTorch."
+        "pip install gfpgan  # 包含 CodeFormer 支持。需要 PyTorch。"
     )
     agent_skills = ["ffmpeg"]
     fallback = None

@@ -25,39 +25,39 @@ from tools.base_tool import (
 # Named presets mapping to FFmpeg filter chains
 PRESETS = {
     "soft_skin": {
-        "description": "Gentle skin smoothing while preserving edges",
+        "description": "柔和磨皮，保留边缘细节",
         "vf": "smartblur=lr=1.0:ls=-0.5:lt=-3.0:cr=0.5:cs=-0.5:ct=-3.0",
     },
     "sharpen": {
-        "description": "Edge sharpening for crisp detail",
+        "description": "边缘锐化，提升清晰度",
         "vf": "unsharp=5:5:1.0:5:5:0.0",
     },
     "sharpen_light": {
-        "description": "Subtle sharpening for soft cameras",
+        "description": "轻微锐化，适用于柔和镜头",
         "vf": "unsharp=3:3:0.5:3:3:0.0",
     },
     "brighten": {
-        "description": "Lift shadows and midtones for poorly lit footage",
+        "description": "提亮阴影和中间调，适用于光线不足的素材",
         "vf": "curves=all='0/0 0.25/0.35 0.5/0.55 0.75/0.8 1/1'",
     },
     "contrast_boost": {
-        "description": "Add punch with an S-curve contrast adjustment",
+        "description": "S 曲线对比度增强，增加画面冲击力",
         "vf": "curves=all='0/0 0.25/0.20 0.5/0.5 0.75/0.80 1/1'",
     },
     "warm": {
-        "description": "Warm skin tones — slight orange shift",
+        "description": "暖色调 — 微偏橙色",
         "vf": "colorbalance=rs=0.05:gs=0.0:bs=-0.05:rm=0.05:gm=0.0:bm=-0.03",
     },
     "cool": {
-        "description": "Cool tones — slight blue shift",
+        "description": "冷色调 — 微偏蓝色",
         "vf": "colorbalance=rs=-0.03:gs=0.0:bs=0.05:rm=-0.02:gm=0.0:bm=0.03",
     },
     "denoise": {
-        "description": "Temporal noise reduction for grainy footage",
+        "description": "时域降噪，适用于颗粒感素材",
         "vf": "hqdn3d=4:3:6:4",
     },
     "talking_head_standard": {
-        "description": "Combined preset: skin smoothing + sharpen edges + warm skin tones",
+        "description": "组合预设：磨皮 + 锐化边缘 + 暖色肤色",
         "vf": (
             "smartblur=lr=1.0:ls=-0.5:lt=-3.0:cr=0.5:cs=-0.5:ct=-3.0,"
             "unsharp=5:5:0.6:5:5:0.0,"
@@ -78,7 +78,7 @@ class FaceEnhance(BaseTool):
     determinism = Determinism.DETERMINISTIC
 
     dependencies = ["cmd:ffmpeg"]
-    install_instructions = "Install FFmpeg: https://ffmpeg.org/download.html"
+    install_instructions = "安装 FFmpeg：https://ffmpeg.org/download.html"
     agent_skills = ["ffmpeg"]
 
     capabilities = [

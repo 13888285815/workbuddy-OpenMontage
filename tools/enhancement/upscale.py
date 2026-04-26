@@ -30,15 +30,15 @@ VIDEO_EXTENSIONS = {".mp4", ".mov", ".avi"}
 
 MODELS = {
     "RealESRGAN_x4plus": {
-        "description": "General-purpose photo/video upscaler (default)",
+        "description": "通用照片/视频超分辨率（默认）",
         "scale": 4,
     },
     "RealESRGAN_x4plus_anime_6B": {
-        "description": "Optimised for anime/illustration content",
+        "description": "动漫/插画内容优化",
         "scale": 4,
     },
     "RealESRNet_x4plus": {
-        "description": "Lighter network, faster but lower quality",
+        "description": "轻量网络，更快但质量较低",
         "scale": 4,
     },
 }
@@ -56,7 +56,7 @@ class Upscale(BaseTool):
     runtime = ToolRuntime.LOCAL_GPU
 
     dependencies = ["python:realesrgan", "python:torch", "cmd:ffmpeg"]
-    install_instructions = "pip install realesrgan  # Requires PyTorch with CUDA"
+    install_instructions = "pip install realesrgan  # 需要支持 CUDA 的 PyTorch"
     agent_skills = ["ffmpeg"]
 
     capabilities = [

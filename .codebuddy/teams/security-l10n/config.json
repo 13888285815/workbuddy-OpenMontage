@@ -1,0 +1,28 @@
+{
+  "name": "security-l10n",
+  "leadAgentId": "6431f2361c03459894cd87d87e792462",
+  "workspacePath": "/Users/zzx/Desktop/ai源码/workbuddy-OpenMontage",
+  "createdAt": "2026-04-26T04:43:19.465Z",
+  "options": {
+    "workspacePath": "/Users/zzx/Desktop/ai源码/workbuddy-OpenMontage",
+    "isAutoTeam": false
+  },
+  "members": [
+    {
+      "memberId": "team-lead@security-l10n",
+      "name": "team-lead",
+      "role": "Team Lead - coordinates the team and interacts with the user"
+    },
+    {
+      "memberId": "security-fix@security-l10n",
+      "name": "security-fix",
+      "role": "修复Python安全漏洞"
+    },
+    {
+      "memberId": "l10n-fix@security-l10n",
+      "name": "l10n-fix",
+      "role": "汉化文档和UI文本"
+    }
+  ],
+  "isAutoTeam": false
+}

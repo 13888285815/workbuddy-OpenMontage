@@ -3,28 +3,28 @@
 # ---- One-command setup ----
 
 setup:
-	@echo "==> Installing Python dependencies..."
+	@echo "==> 安装 Python 依赖..."
 	pip install -r requirements.txt
 	@echo ""
-	@echo "==> Installing Remotion composer..."
+	@echo "==> 安装 Remotion composer..."
 	cd remotion-composer && npm install
 	@echo ""
-	@echo "==> Installing free offline TTS (Piper)..."
-	pip install piper-tts || echo "  [skip] piper-tts install failed — TTS will use cloud providers instead"
+	@echo "==> 安装免费离线 TTS (Piper)..."
+	pip install piper-tts || echo "  [跳过] piper-tts 安装失败 — TTS 将使用云提供商"
 	@echo ""
-	@echo "==> Installing HyperFrames runtime (cache-warm via npx)..."
-	@echo "    Pulls the 'hyperframes' npm package into the local npx cache so the"
-	@echo "    first render doesn't pay a 30-60s cold-fetch penalty. ~20MB of disk."
-	@npx --yes hyperframes --version >/dev/null 2>&1 && echo "    HyperFrames CLI cached (npx)" || echo "  [skip] HyperFrames cache-warm failed — offline or npm unavailable; first render will fetch on demand"
-	@python -c "from tools.video.hyperframes_compose import HyperFramesCompose; HyperFramesCompose._npm_resolve_cache=None; c=HyperFramesCompose()._runtime_check(); print(f'    HyperFrames runtime_available={c[\"runtime_available\"]}, npm={c.get(\"npm_package_version\") or c.get(\"npm_resolve_error\")}'); [print(f'    note: {r}') for r in c['reasons']]" || echo "  [skip] HyperFrames check failed — runtime can be set up later"
+	@echo "==> 安装 HyperFrames 运行时 (通过 npx 预热缓存)..."
+	@echo "    将 'hyperframes' npm 包拉取到本地 npx 缓存，这样"
+	@echo "    首次渲染不会支付 30-60 秒的冷获取惩罚。约 20MB 磁盘。"
+	@npx --yes hyperframes --version >/dev/null 2>&1 && echo "    HyperFrames CLI 已缓存 (npx)" || echo "  [跳过] HyperFrames 缓存预热失败 — 离线或 npm 不可用；首次渲染将按需获取"
+	@python -c "from tools.video.hyperframes_compose import HyperFramesCompose; HyperFramesCompose._npm_resolve_cache=None; c=HyperFramesCompose()._runtime_check(); print(f'    HyperFrames runtime_available={c[\"runtime_available\"]}, npm={c.get(\"npm_package_version\") or c.get(\"npm_resolve_error\")}'); [print(f'    note: {r}') for r in c['reasons']]" || echo "  [跳过] HyperFrames 检查失败 — 运行时可以稍后设置"
 	@echo ""
-	python -c "import shutil, os; e=os.path.exists('.env'); shutil.copy('.env.example','.env') if not e else None; print('==> Created .env from .env.example — add your API keys there.' if not e else '==> .env already exists — skipping.')"
+	python -c "import shutil, os; e=os.path.exists('.env'); shutil.copy('.env.example','.env') if not e else None; print('==> 已从 .env.example 创建 .env — 在那里添加你的 API 密钥。' if not e else '==> .env 已存在 — 跳过。')"
 	@echo ""
-	@echo "Done! Open this project in your AI coding assistant and start creating."
-	@echo "  Optional: add API keys to .env to unlock cloud providers."
-	@echo "  Optional: run 'make install-gpu' if you have an NVIDIA GPU."
-	@echo "  Optional: run 'make hyperframes-doctor' to fully validate the HyperFrames runtime."
-	@echo "  Optional: run 'make hyperframes-warm' anytime to refresh the npx cache to the latest hyperframes version."
+	@echo "完成！在你的 AI 编程助手中打开这个项目并开始创作。"
+	@echo "  可选：在 .env 中添加 API 密钥以解锁云提供商。"
+	@echo "  可选：如果你有 NVIDIA GPU，运行 'make install-gpu'。"
+	@echo "  可选：运行 'make hyperframes-doctor' 以完全验证 HyperFrames 运行时。"
+	@echo "  可选：随时运行 'make hyperframes-warm' 以将 npx 缓存刷新到最新的 hyperframes 版本。"
 
 # ---- Individual installs ----
 
@@ -52,18 +52,18 @@ preflight:
 	python -c "from tools.tool_registry import registry; import json; registry.discover(); print(json.dumps(registry.provider_menu(), indent=2))"
 
 hyperframes-doctor:
-	@echo "==> Probing HyperFrames runtime (node/ffmpeg/npx + hyperframes doctor)..."
+	@echo "==> 检测 HyperFrames 运行时 (node/ffmpeg/npx + hyperframes doctor)..."
 	python -c "from tools.video.hyperframes_compose import HyperFramesCompose; r=HyperFramesCompose().execute({'operation':'doctor'}); import json; print(json.dumps(r.data, indent=2)); print('OK' if r.success else f'FAIL: {r.error}')"
 
 hyperframes-warm:
-	@echo "==> Refreshing the HyperFrames npx cache to latest..."
-	@echo "    Uses --prefer-online so npx picks up new releases since your last run."
+	@echo "==> 刷新 HyperFrames npx 缓存到最新版本..."
+	@echo "    使用 --prefer-online 以便 npx 获取自上次运行以来的新版本。"
 	npx --yes --prefer-online hyperframes --version
-	@echo "==> Cache warm complete."
+	@echo "==> 缓存预热完成。"
 
 demo:
-	@echo "==> Rendering zero-key demo videos (no API keys needed)..."
-	@echo "    These use only Remotion components — animated charts, text, data viz."
+	@echo "==> 渲染零密钥演示视频（无需 API 密钥）..."
+	@echo "    这些仅使用 Remotion 组件 — 动画图表、文本、数据可视化。"
 	@echo ""
 	python render_demo.py
 

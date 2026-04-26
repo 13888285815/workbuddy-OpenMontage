@@ -51,15 +51,41 @@ class MathAnimate(BaseTool):
 
     dependencies = ["cmd:manim"]
     install_instructions = (
-        "Install ManimCE:\n"
+        "安装 ManimCE：\n"
         "  pip install manim\n"
         "  manim checkhealth\n"
-        "Requires: Python 3.8+, FFmpeg, LaTeX (optional, for math formulas)\n"
-        "  Windows: choco install miktex ffmpeg\n"
-        "  macOS: brew install mactex ffmpeg\n"
-        "  Linux: sudo apt install texlive-full ffmpeg"
+        "要求：Python 3.8+、FFmpeg、LaTeX（可选，用于数学公式）\n"
+        "  Windows：choco install miktex ffmpeg\n"
+        "  macOS：brew install mactex ffmpeg\n"
+        "  Linux：sudo apt install texlive-full ffmpeg"
     )
     agent_skills = ["manimce-best-practices", "manim-composer"]
+
+    _DANGEROUS_PATTERNS = [
+        r"\bos\.system\s*\(",
+        r"\bsubprocess\s*[.\(]",
+        r"\beval\s*\(",
+        r"\bexec\s*\(",
+        r"\b__import__\s*\(",
+        r"\bshutil\.",
+        r"\bimportlib\b",
+        r"\bpickle\b",
+        r"\bmarshal\b",
+        r"\bctypes\b",
+        r"\bsocket\b",
+        r"\bhttp\b",
+        r"\burllib\b",
+        r"\brequests\b",
+    ]
+
+    def _validate_scene_code(self, code: str) -> Optional[str]:
+        """检查场景代码是否包含危险调用。"""
+        import re
+        for pattern in self._DANGEROUS_PATTERNS:
+            match = re.search(pattern, code)
+            if match:
+                return f"场景代码包含不允许的调用: {match.group()!r}。Manim 场景仅允许使用 manim 库进行动画渲染。"
+        return None
 
     capabilities = [
         "render_scene",
@@ -74,20 +100,19 @@ class MathAnimate(BaseTool):
             "scene_code": {
                 "type": "string",
                 "description": (
-                    "Python code defining a Manim scene. Must contain a class "
-                    "inheriting from Scene with a construct() method. "
-                    "Import 'from manim import *' is auto-added if missing."
+                    "定义 Manim 场景的 Python 代码。必须包含一个继承自 Scene 类且带有 construct() 方法的类。"
+                    "如果缺少导入语句，将自动添加 'from manim import *'。"
                 ),
             },
             "scene_name": {
                 "type": "string",
-                "description": "Name of the Scene class to render. Auto-detected if only one scene.",
+                "description": "要渲染的 Scene 类名称。如果只有一个场景则自动检测。",
             },
             "quality": {
                 "type": "string",
                 "enum": list(QUALITY_PRESETS.keys()),
                 "default": "medium",
-                "description": "Render quality preset",
+                "description": "渲染质量预设",
             },
             "format": {
                 "type": "string",
@@ -182,6 +207,11 @@ class MathAnimate(BaseTool):
                     success=False,
                     error="Could not detect Scene class name. Provide scene_name explicitly.",
                 )
+
+        # Validate scene code before writing
+        validation_error = self._validate_scene_code(scene_code)
+        if validation_error:
+            return ToolResult(success=False, error=validation_error)
 
         # Write scene code to temp file
         work_dir = Path(tempfile.mkdtemp(prefix="manim_"))

@@ -85,22 +85,9 @@ class ToolRegistry:
 
     @staticmethod
     def _load_dotenv() -> None:
-        """Load .env file into os.environ if present, so tools can find API keys."""
-        from pathlib import Path
-        import os
-        env_path = Path(__file__).resolve().parent.parent / ".env"
-        if not env_path.is_file():
-            return
-        with open(env_path, encoding="utf-8", errors="ignore") as f:
-            for line in f:
-                line = line.strip()
-                if not line or line.startswith("#") or "=" not in line:
-                    continue
-                key, _, value = line.partition("=")
-                key = key.strip()
-                value = value.strip().strip("'\"")
-                if key and key not in os.environ:
-                    os.environ[key] = value
+        """通过 lib.env_loader 加载 .env 环境变量。"""
+        from lib.env_loader import load_env
+        load_env()
 
     def discover(self, package_name: str = "tools") -> list[str]:
         """Import a package tree and register any concrete tools it defines."""

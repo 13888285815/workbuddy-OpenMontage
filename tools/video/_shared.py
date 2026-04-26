@@ -519,6 +519,17 @@ def generate_ltx_modal_video(inputs: dict[str, Any]) -> ToolResult:
     if not endpoint_url:
         return ToolResult(success=False, error="MODAL_LTX2_ENDPOINT_URL not set.")
 
+    # URL 安全验证
+    from urllib.parse import urlparse
+    parsed = urlparse(endpoint_url)
+    if parsed.scheme not in ("http", "https"):
+        return ToolResult(
+            success=False,
+            error=f"MODAL_LTX2_ENDPOINT_URL 必须使用 http 或 https 协议，当前为: {parsed.scheme}",
+        )
+    if not parsed.hostname:
+        return ToolResult(success=False, error="MODAL_LTX2_ENDPOINT_URL 格式无效：缺少主机名")
+
     prompt = inputs["prompt"]
     operation = inputs.get("operation", "text_to_video")
     aspect = inputs.get("aspect_ratio", "16:9")

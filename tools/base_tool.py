@@ -21,31 +21,9 @@ from typing import Any, Callable, Optional
 
 
 def _load_dotenv() -> None:
-    """Load .env into os.environ once at import time.
-
-    This ensures API keys are available before any tool is instantiated,
-    even when tools are imported directly without going through the registry.
-    Only sets variables that are not already in the environment.
-    """
-    env_path = Path(__file__).resolve().parent.parent / ".env"
-    if not env_path.is_file():
-        return
-    with open(env_path, encoding="utf-8", errors="ignore") as f:
-        for line in f:
-            line = line.strip()
-            if not line or line.startswith("#") or "=" not in line:
-                continue
-            key, _, value = line.partition("=")
-            key = key.strip()
-            value = value.strip().strip("'\"")
-            # Strip inline comments: VAR=value  # comment
-            # But only if the # is preceded by whitespace (avoid stripping from values like colors)
-            if "  #" in value:
-                value = value[:value.index("  #")].rstrip()
-            elif "\t#" in value:
-                value = value[:value.index("\t#")].rstrip()
-            if key and key not in os.environ:
-                os.environ[key] = value
+    """通过 lib.env_loader 加载 .env 环境变量（安全代理至 python-dotenv）。"""
+    from lib.env_loader import load_env
+    load_env()
 
 
 _load_dotenv()
@@ -215,6 +193,9 @@ class BaseTool(ABC):
                         f"Environment variable {env_name!r} not set. {self.install_instructions}"
                     )
             elif dep.startswith("python:"):
+                # 使用 __import__ 进行模块存在性检查是安全的：
+                # 此处仅传入字面量模块名（来自工具声明的 dependencies 列表），
+                # 不包含任何用户输入，不会触发任意代码执行。
                 module_name = dep[7:]
                 try:
                     __import__(module_name)

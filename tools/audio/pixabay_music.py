@@ -45,9 +45,9 @@ class PixabayMusic(BaseTool):
 
     dependencies = []  # no API key needed — web scraping
     install_instructions = (
-        "No setup required. Pixabay Music is free and needs no API key.\n"
-        "Note: This tool scrapes the Pixabay website. If it breaks, the\n"
-        "site's HTML structure may have changed. Use freesound_music as fallback."
+        "无需设置。Pixabay 音乐免费且不需要 API 密钥。\n"
+        "注意：此工具通过网页抓取获取 Pixabay 音乐。如果功能异常，\n"
+        "可能是网站 HTML 结构发生变化。请使用 freesound_music 作为替代。"
     )
 
     agent_skills = ["music"]
@@ -109,9 +109,8 @@ class PixabayMusic(BaseTool):
     ]
 
     _USER_AGENT = (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/131.0.0.0 Safari/537.36"
+        "OpenMontage/1.0 (Video Production Tool; "
+        "https://github.com/calesthio/OpenMontage)"
     )
 
     _BROWSER_HEADERS = {
@@ -120,14 +119,6 @@ class PixabayMusic(BaseTool):
             "q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8"
         ),
         "Accept-Language": "en-US,en;q=0.9",
-        "Sec-Ch-Ua": '"Chromium";v="131", "Not_A Brand";v="24"',
-        "Sec-Ch-Ua-Mobile": "?0",
-        "Sec-Ch-Ua-Platform": '"Windows"',
-        "Sec-Fetch-Dest": "document",
-        "Sec-Fetch-Mode": "navigate",
-        "Sec-Fetch-Site": "none",
-        "Sec-Fetch-User": "?1",
-        "Upgrade-Insecure-Requests": "1",
     }
 
     def get_status(self) -> ToolStatus:

@@ -3,10 +3,10 @@ import {
   Img,
   interpolate,
   spring,
-  staticFile,
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
+import { resolveAsset } from "../utils/resolveAsset";
 
 /**
  * ScreenshotScene — approach-1 synthetic UI demo.
@@ -84,16 +84,7 @@ interface ScreenshotSceneProps {
 
 // ---------- Helpers ----------
 
-function resolveAsset(src: string): string {
-  if (src.startsWith("http://") || src.startsWith("https://") || src.startsWith("data:")) {
-    return src;
-  }
-  const clean = src.replace(/^file:\/\/\/?/, "");
-  if (clean.startsWith("/") || /^[A-Za-z]:[\\/]/.test(clean)) {
-    return `file:///${clean.replace(/\\/g, "/")}`;
-  }
-  return staticFile(clean);
-}
+// resolveAsset 已移至共享模块 utils/resolveAsset.ts
 
 /** Compute the rendered bounding box of the backdrop inside a canvas,
  *  using object-fit: contain semantics. Returns pixel offsets/sizes. */
