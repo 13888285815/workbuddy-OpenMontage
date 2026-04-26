@@ -1,0 +1,37 @@
+name: Deploy Remotion Studio
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    name: Bundle & Deploy Studio
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@main
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        working-directory: remotion-composer
+        run: npm install
+
+      - name: Bundle Studio
+        working-directory: remotion-composer
+        run: npx remotion bundle --public-path="./"
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: remotion-composer/build
+          branch: gh-pages
