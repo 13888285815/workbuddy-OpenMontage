@@ -7,11 +7,17 @@ on:
       - main
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
 
 jobs:
-  deploy:
-    name: Bundle & Deploy Studio
+  build:
+    name: Bundle Studio
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -30,8 +36,25 @@ jobs:
         working-directory: remotion-composer
         run: npx remotion bundle --public-path="./"
 
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: Fix permissions
+        working-directory: remotion-composer/build
+        run: |
+          chmod -R +r .
+          find . -type d -exec chmod +x {} +
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          folder: remotion-composer/build
-          branch: gh-pages
+          path: remotion-composer/build
+
+  deploy:
+    name: Deploy to Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
